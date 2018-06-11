@@ -48,17 +48,47 @@ rm(list = ls())
 
 #### 2.1 `mutate()` function
 To get rid of a new variable by setting it to `NULL`.
-
 ```{r}
 mtcars %>% head(10) %>%
   mutate(tmp1 = wt * 10, tmp2 = qsec * 10, tmp1 = NULL)
 
 ```
 
+#### 2.2 `rename()` function
+To chage column names by using `rename()`.
+```{r}
+mtcars[, 1:5] %>% head(10) %>%
+  rename(mpg.NEW = mpg,
+         cyl.NEW = cyl,
+         disp.NEW = disp)
+```
 
+* `select()` function
+    - `select()` can change the name of columns request to keep.
+    - `everthing()` selects all columns.
+```{r}
+mtcars[, 1:5] %>% head(10) %>%
+  select(mpg.NEW = mpg, everything())
+```
 
+* `tally()` function
+    - A convenience function that knows to count rows.
+    - `count()` gives the same result.
+```{r}
+mtcars %>% group_by(gear) %>%
+  tally()
 
+mtcars %>% count(gear)
+```
 
+* `summarise_at()` function
+    - applies the summarise function(s) to multiple variables
+```{r}
+mtcars %>%
+  group_by(cyl) %>%
+  summarise_at(vars(mpg, disp, hp), funs(mean, median))
+```
+    
 
 
 
