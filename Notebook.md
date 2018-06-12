@@ -9,46 +9,35 @@ STAT545 Notebook
 
 `Date: 11/06/2018`
 
-#### 1.1 The operator `<-`
+-   **The assign operator `<-`**
+    The operator `<-` is recommended to use when coding. A shortcut to input the operator is **Alt+-**. RStudio automatically surrounds it with spaces.
 
-The operator `<-` is recommended to use when coding. A shortcut to input the operator is **Alt+-**. RStudio automatically surrounds it with spaces.
+-   **Keyboard shortcuts**
+    Try **Alt+Shift+K** to see the list of shortcuts in RStudio.
 
-#### 1.2 Keyboard shortcuts
-
-Try **Alt+Shift+K** to see the list of shortcuts in RStudio.
-
-#### 1.3 R chunk
-
--   insert a R chunk: **Ctrl+Alt+I**.
--   run a R chunk: placing the cursor inside it and pressing **Ctrl+Shift+Enter**.
-
-#### 1.4 Clear Environment tab
-
-`ls()` gives the whole stuff stored in the environment at the moment
+-   **R chunk**
+    -   insert a R chunk: **Ctrl+Alt+I**.
+    -   run a R chunk: placing the cursor inside it and pressing **Ctrl+Shift+Enter**.
+-   **Clear Environment tab**
+    `ls()` gives the whole stuff stored in the environment at the moment
+    Clear the workspace to ensure the code is re-runnable:
 
 ``` r
 ls()
 #> [1] "autoloads"
-```
-
-Clear the workspace to ensure the code is re-runnable:
-
-``` r
 rm(list = ls())
 ```
 
-#### 1.5 Dataframe
-
--   use the package `tidyverse`, which includes popular packages like `dplyr` and `ggplot2`.
--   matrix has a homogenous structure, which means we can't put character data into a numeric matrix.
--   `data()` gives the full list of the datasets of loaded packages
+-   **Dataframe**
+    -   use the package `tidyverse`, which includes popular packages like `dplyr` and `ggplot2`.
+    -   matrix has a homogenous structure, which means we can't put character data into a numeric matrix.
+    -   `data()` gives the full list of the datasets of loaded packages
 
 2. dplyr functions
 ------------------
 
-#### 2.1 `mutate()` function
-
-To get rid of a new variable by setting it to `NULL`.
+-   **`mutate()` function**
+    To get rid of a new variable by setting it to `NULL`.
 
 ``` r
 mtcars %>% head(10) %>%
@@ -66,9 +55,8 @@ mtcars %>% head(10) %>%
 #> 10 19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4 183.0
 ```
 
-#### 2.2 `rename()` function
-
-To chage column names by using `rename()`.
+-   **`rename()` function **
+    To chage column names by using `rename()`.
 
 ``` r
 mtcars[, 1:5] %>% head(10) %>%
@@ -88,7 +76,7 @@ mtcars[, 1:5] %>% head(10) %>%
 #> Merc 280             19.2       6    167.6 123 3.92
 ```
 
--   `select()` function
+-   **`select()` function**
     -   `select()` can change the name of columns request to keep.
     -   `everthing()` selects all columns.
 
@@ -108,8 +96,9 @@ mtcars[, 1:5] %>% head(10) %>%
 #> Merc 280             19.2   6 167.6 123 3.92
 ```
 
--   `tally()` function
+-   **`tally()` function**
     -   A convenience function that knows to count rows.
+    -   `count()` gives the same result.
 
 ``` r
 mtcars %>% group_by(gear) %>%
@@ -130,4 +119,81 @@ mtcars %>% count(gear)
 #> 3     5     5
 ```
 
-Or
+-   **`summarise_at()` function**
+    -   applies the summarise function(s) to multiple variables
+
+``` r
+mtcars %>%
+  group_by(cyl) %>%
+  summarise_at(vars(mpg, disp, hp), funs(mean, median))
+#> # A tibble: 3 x 7
+#>     cyl mpg_mean disp_mean hp_mean mpg_median disp_median hp_median
+#>   <dbl>    <dbl>     <dbl>   <dbl>      <dbl>       <dbl>     <dbl>
+#> 1     4     26.7      105.    82.6       26          108        91 
+#> 2     6     19.7      183.   122.        19.7        168.      110 
+#> 3     8     15.1      353.   209.        15.2        350.      192.
+```
+
+-   **`first()`, `last()`, `nth()`**
+    Extract the first, last or nth value from a vector.
+    It doesn't collapse the *n* rows for each group into one row, but compute within them.
+
+``` r
+mtcars[, 1:5] %>%
+  group_by(cyl) %>%
+  mutate(qsec.diff = disp - first(disp))
+#> # A tibble: 32 x 6
+#> # Groups:   cyl [3]
+#>      mpg   cyl  disp    hp  drat qsec.diff
+#>    <dbl> <dbl> <dbl> <dbl> <dbl>     <dbl>
+#>  1  21       6  160    110  3.9       0   
+#>  2  21       6  160    110  3.9       0   
+#>  3  22.8     4  108     93  3.85      0   
+#>  4  21.4     6  258    110  3.08     98   
+#>  5  18.7     8  360    175  3.15      0   
+#>  6  18.1     6  225    105  2.76     65   
+#>  7  14.3     8  360    245  3.21      0   
+#>  8  24.4     4  147.    62  3.69     38.7 
+#>  9  22.8     4  141.    95  3.92     32.8 
+#> 10  19.2     6  168.   123  3.92      7.60
+#> # ... with 22 more rows
+```
+
+-   **`min_rank()` function**
+    `min_rank()` is a windowed function, taking *n* inputs and giving back *n* outputs.
+    Among the three methods, `min_rank()` is the one having the right result.
+
+``` r
+mtcars[, 1:5] %>%
+  group_by(cyl) %>%
+  filter(min_rank(hp) == 1)
+#> # A tibble: 4 x 5
+#> # Groups:   cyl [3]
+#>     mpg   cyl  disp    hp  drat
+#>   <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1  18.1     6 225     105  2.76
+#> 2  30.4     4  75.7    52  4.93
+#> 3  15.5     8 318     150  2.76
+#> 4  15.2     8 304     150  3.15
+
+mtcars[, 1:5] %>%
+  group_by(cyl) %>%
+  filter(rank(hp) == 1)
+#> # A tibble: 2 x 5
+#> # Groups:   cyl [2]
+#>     mpg   cyl  disp    hp  drat
+#>   <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1  18.1     6 225     105  2.76
+#> 2  30.4     4  75.7    52  4.93
+
+mtcars[, 1:5] %>%
+  group_by(cyl) %>%
+  filter(order(hp) == 1)
+#> # A tibble: 3 x 5
+#> # Groups:   cyl [3]
+#>     mpg   cyl  disp    hp  drat
+#>   <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1  21       6  160    110  3.9 
+#> 2  16.4     8  276.   180  3.07
+#> 3  21.5     4  120.    97  3.7
+```

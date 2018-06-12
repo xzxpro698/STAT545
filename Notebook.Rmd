@@ -8,7 +8,7 @@ output:
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
+  collapse = TRUE, # knitr will put the source and output blocks in a single block
   comment = "#>",
   fig.path = "README-"
 )
@@ -18,35 +18,32 @@ knitr::opts_chunk$set(
 ## 1. Basic Working of RStudio
 `Date: 11/06/2018`
 
-#### 1.1 The operator `<-`
+* **The assign operator `<-`**  
 The operator `<-` is recommended to use when coding. A shortcut to input the operator is __Alt+-__. RStudio automatically surrounds it with spaces.
 
-#### 1.2 Keyboard shortcuts
+* **Keyboard shortcuts**  
 Try __Alt+Shift+K__ to see the list of shortcuts in RStudio.
 
-#### 1.3 R chunk
-  * insert a R chunk: __Ctrl+Alt+I__.
-  * run a R chunk: placing the cursor inside it and pressing __Ctrl+Shift+Enter__.
+* **R chunk**  
+    * insert a R chunk: __Ctrl+Alt+I__.
+    * run a R chunk: placing the cursor inside it and pressing __Ctrl+Shift+Enter__.
 
-#### 1.4 Clear Environment tab
-`ls()` gives the whole stuff stored in the environment at the moment
-```{r}
-ls()
-```
-
+* **Clear Environment tab**  
+`ls()` gives the whole stuff stored in the environment at the moment  
 Clear the workspace to ensure the code is re-runnable:
 ```{r}
+ls()
 rm(list = ls())
 ```
 
-#### 1.5 Dataframe
-  * use the package `tidyverse`, which includes popular packages like `dplyr` and `ggplot2`.
-  * matrix has a homogenous structure, which means we can't put character data into a numeric matrix.
-  * `data()` gives the full list of the datasets of loaded packages
+* **Dataframe**
+    * use the package `tidyverse`, which includes popular packages like `dplyr` and `ggplot2`.
+    * matrix has a homogenous structure, which means we can't put character data into a numeric matrix.
+    * `data()` gives the full list of the datasets of loaded packages
 
 ## 2. dplyr functions
 
-#### 2.1 `mutate()` function
+* **`mutate()` function**  
 To get rid of a new variable by setting it to `NULL`.
 ```{r}
 mtcars %>% head(10) %>%
@@ -54,7 +51,7 @@ mtcars %>% head(10) %>%
 
 ```
 
-#### 2.2 `rename()` function
+* **`rename()` function  **  
 To chage column names by using `rename()`.
 ```{r}
 mtcars[, 1:5] %>% head(10) %>%
@@ -63,7 +60,7 @@ mtcars[, 1:5] %>% head(10) %>%
          disp.NEW = disp)
 ```
 
-* `select()` function
+* **`select()` function**  
     - `select()` can change the name of columns request to keep.
     - `everthing()` selects all columns.
 ```{r}
@@ -71,7 +68,7 @@ mtcars[, 1:5] %>% head(10) %>%
   select(mpg.NEW = mpg, everything())
 ```
 
-* `tally()` function
+* **`tally()` function**  
     - A convenience function that knows to count rows.
     - `count()` gives the same result.
 ```{r}
@@ -81,7 +78,7 @@ mtcars %>% group_by(gear) %>%
 mtcars %>% count(gear)
 ```
 
-* `summarise_at()` function
+* **`summarise_at()` function**  
     - applies the summarise function(s) to multiple variables
 ```{r}
 mtcars %>%
@@ -89,7 +86,42 @@ mtcars %>%
   summarise_at(vars(mpg, disp, hp), funs(mean, median))
 ```
     
+* **`first()`, `last()`, `nth()`**  
+Extract the first, last or nth value from a vector.  
+It doesn't collapse the *n* rows for each group into one row, but compute within them.  
+```{r}
+mtcars[, 1:5] %>%
+  group_by(cyl) %>%
+  mutate(qsec.diff = disp - first(disp))
+```
 
+* **`min_rank()` function**  
+`min_rank()` is a windowed function, taking *n* inputs and giving back *n* outputs.  
+Compared with `rank` and `order`, `min_rank()` is the one having the right result. Since `mtcars` is grouped by `cyl`, `min_rank()` operates within the subset. 
+```{r}
+mtcars[, 1:5] %>%
+  group_by(cyl) %>%
+  filter(min_rank(hp) == 1)
+
+mtcars[, 1:5] %>%
+  group_by(cyl) %>%
+  filter(rank(hp) == 1)
+
+mtcars[, 1:5] %>%
+  group_by(cyl) %>%
+  filter(order(hp) == 1)
+```
+
+* **`top_n()` function**
+Select top (or bottom) n rows by value. The wrapper of `filter()` and `min_rank()` has the same result.  
+`min_rank()` orders the vector from the smallest. `top_n()` orders the vector from the largest. Use a negative `-` to revert the order.
+```{r}
+mtcars %>%
+  filter(min_rank(hp) <= 3)
+
+mtcars %>%
+  top_n(-3, hp)
+```
 
 
 
