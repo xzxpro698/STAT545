@@ -1,5 +1,6 @@
 ---
 title: "STAT545 Notebook"
+date: 11/06/2018
 output: 
   github_document:
     toc: true
@@ -16,8 +17,6 @@ knitr::opts_chunk$set(
 
 
 ## 1. Basic Working of RStudio
-`Date: 11/06/2018`
-
 * **The assign operator `<-`**  
 The operator `<-` is recommended to use when coding. A shortcut to input the operator is __Alt+-__. RStudio automatically surrounds it with spaces.
 
