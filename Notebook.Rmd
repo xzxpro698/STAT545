@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 ```
 
 
-## 1. Basic Working of RStudio
+### 1. Basic Working of RStudio
 * **The assign operator `<-`**  
 The operator `<-` is recommended to use when coding. A shortcut to input the operator is __Alt+-__. RStudio automatically surrounds it with spaces.
 
@@ -40,7 +40,7 @@ rm(list = ls())
     * matrix has a homogenous structure, which means we can't put character data into a numeric matrix.
     * `data()` gives the full list of the datasets of loaded packages
 
-## 2. dplyr functions
+### 2. dplyr functions
 
 * **`mutate()` function**  
 To get rid of a new variable by setting it to `NULL`.
@@ -111,7 +111,7 @@ mtcars[, 1:5] %>%
   filter(order(hp) == 1)
 ```
 
-* **`top_n()` function**
+* **`top_n()` function**  
 Select top (or bottom) n rows by value. The wrapper of `filter()` and `min_rank()` has the same result.  
 `min_rank()` orders the vector from the smallest. `top_n()` orders the vector from the largest. Use a negative `-` to revert the order.
 ```{r}

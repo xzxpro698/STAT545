@@ -1,13 +1,12 @@
 STAT545 Notebook
 ================
+11/06/2018
 
 -   [1. Basic Working of RStudio](#basic-working-of-rstudio)
 -   [2. dplyr functions](#dplyr-functions)
 
 1. Basic Working of RStudio
 ---------------------------
-
-`Date: 11/06/2018`
 
 -   **The assign operator `<-`**
     The operator `<-` is recommended to use when coding. A shortcut to input the operator is **Alt+-**. RStudio automatically surrounds it with spaces.
@@ -161,7 +160,7 @@ mtcars[, 1:5] %>%
 
 -   **`min_rank()` function**
     `min_rank()` is a windowed function, taking *n* inputs and giving back *n* outputs.
-    Among the three methods, `min_rank()` is the one having the right result.
+    Compared with `rank` and `order`, `min_rank()` is the one having the right result. Since `mtcars` is grouped by `cyl`, `min_rank()` operates within the subset.
 
 ``` r
 mtcars[, 1:5] %>%
@@ -196,4 +195,23 @@ mtcars[, 1:5] %>%
 #> 1  21       6  160    110  3.9 
 #> 2  16.4     8  276.   180  3.07
 #> 3  21.5     4  120.    97  3.7
+```
+
+-   **`top_n()` function** Select top (or bottom) n rows by value. The wrapper of `filter()` and `min_rank()` has the same result.
+    `min_rank()` orders the vector from the smallest. `top_n()` orders the vector from the largest. Use a negative `-` to revert the order.
+
+``` r
+mtcars %>%
+  filter(min_rank(hp) <= 3)
+#>    mpg cyl  disp hp drat    wt  qsec vs am gear carb
+#> 1 24.4   4 146.7 62 3.69 3.190 20.00  1  0    4    2
+#> 2 30.4   4  75.7 52 4.93 1.615 18.52  1  1    4    2
+#> 3 33.9   4  71.1 65 4.22 1.835 19.90  1  1    4    1
+
+mtcars %>%
+  top_n(-3, hp)
+#>    mpg cyl  disp hp drat    wt  qsec vs am gear carb
+#> 1 24.4   4 146.7 62 3.69 3.190 20.00  1  0    4    2
+#> 2 30.4   4  75.7 52 4.93 1.615 18.52  1  1    4    2
+#> 3 33.9   4  71.1 65 4.22 1.835 19.90  1  1    4    1
 ```
